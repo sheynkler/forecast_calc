@@ -1,0 +1,9 @@
+---
+title: "Dynamic report"
+output: pdf_document
+---
+
+
+```{r}
+print("#plot(rnorm(params$n), rnorm(params$n))")
+```

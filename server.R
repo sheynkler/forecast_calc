@@ -2,6 +2,7 @@ library(shinyjs)
 source("timeFunctions.R")
 source("jhfjzfjf.R")
 library(shiny)
+library(rmarkdown)
 #load("fit_step.RData")
 
 
@@ -84,7 +85,19 @@ shinyServer(function(input, output, session) {
   )
   output$forcast_plot <- renderPlot({ 
     data_show <- data_show()
-    if(nrow(data_show) > 1) barplot(data_show$Value, col = "cornflowerblue", names.arg = data_show$Time, main = "Predictive viewing time" ) else NULL
+    if(nrow(data_show) > 1){
+      barplot(data_show$Value, col = "cornflowerblue", names.arg = data_show$Time, main = "Predictive viewing time" )
+      'x <- barplot(data_show$Value, col = "cornflowerblue", main = "Predictive viewing time" , xaxt="n")
+      labs <- data_show$Time
+      text(cex=1, x=x-.25, y=-1.25, labs, xpd=TRUE, srt=45, pos=2)'
+'      for(i in 1:length(data_show$Time)){
+        if(substr(data_show$Time[i], 12,13) == "00"){
+          print(data_show$Time[i])
+          abline(v = data_show$Time[i], col = "gray60")
+        } 
+      }'
+      
+    }  else NULL
     
   })
   output$download_table <- downloadHandler(
@@ -114,7 +127,9 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$mydata_2) == F) {
       print(input$mydata_2)
-      if (input$mydata_2 == "jfztf=5326") {
+      mydata_2 <- input$mydata_2
+      mydata_2_TF <- grepl("5326", mydata_2)
+      if (mydata_2_TF) {
         print("da")
         shinyjs::show(id = "content", anim = TRUE)
         shinyjs::hide(id = "login_div", anim = TRUE)
@@ -133,6 +148,31 @@ shinyServer(function(input, output, session) {
                                         message = ""))
     }
   })
+  output$report_pdf <- downloadHandler(
+    # For PDF output, change this to "report.pdf"
+    filename = "report2.pdf",
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      tempReport <- file.path(tempdir(), "new.Rmd")
+      file.copy("new.Rmd", tempReport, overwrite = TRUE)
+      
+      # Set up parameters to pass to Rmd document
+      params <- list(group = input$names_lm,
+                     time1 = time1(),
+                     time2 = time2(),
+                     data_show = data_show()
+                     )
+      
+      # Knit the document, passing in the `params` list, and eval it in a
+      # child of the global environment (this isolates the code in the document
+      # from the code in this app).
+      rmarkdown::render(tempReport, output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
 
-  #output$out <- renderPrint(input$mydata_2)
 })

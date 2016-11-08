@@ -1,0 +1,29 @@
+---
+title: "Time Serial Prediction Modeling"
+#author: "Sh"
+#date: "7 November 2016"
+output: pdf_document
+params: 
+  group: "QQQQQQQQ"
+  time1: 1
+  time2: 2
+  data_show: 3
+    
+---
+
+## Das ist Prognose fuer `r params$group` von `r params$time1` bis `r params$time2`
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo=F}
+data_show <- params$data_show
+
+barplot(data_show$Value, col = "cornflowerblue", names.arg = data_show$Time, main = "Predictive viewing time" )
+knitr::kable(data_show)
+```

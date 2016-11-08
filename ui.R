@@ -3,9 +3,10 @@
 library(shinythemes)
 library(shiny)
 library(shinyjs)
+#library(lubridate)
 
 list_hh <- paste(c(paste0("0",c(0:9)), c(10:23)), "00", sep = ":")
-list_hh_selected <- "03:00"
+list_hh_selected <- paste0(substr(Sys.time(), 12, 13), ":00")
 width_input <- "100px"
 shinyUI(fluidPage(theme = shinytheme("cerulean"),
                   includeCSS("css/mycss.css"),
@@ -19,7 +20,7 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
   # Sidebar with a slider input for number of bins
   
     fluidRow(
-      column(3,
+      column(2,
              div(id = "login_div",
                textInput("login", label = h3("Login:"), value = NULL),
              passwordInput("password", "Password:"),
@@ -38,7 +39,7 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
              h3("Stop"),
              div(
                div(class = "enter_data",
-                   dateInput("date2", label = NULL, value = Sys.Date() + 1)),
+                   dateInput("date2", label = NULL, value = Sys.Date() + 6)),
                div(class = "enter_time",
                    selectInput("hh2", label = NULL, choices = as.list(list_hh), selectize = F, selected = list_hh_selected))),
 
@@ -48,10 +49,12 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
              h3("Selected:"),
                div(
                  h4(textOutput("value")))
+             
+             
              ),
 
              
-      column(9,
+      column(10,
              
              shinyjs::hidden(div(id = "content",
                fluidRow(
@@ -63,7 +66,10 @@ shinyUI(fluidPage(theme = shinytheme("cerulean"),
                       plotOutput("forcast_plot"),
                       
                       div(id = "download_button",
-                        downloadButton("download_table", label = "Download predictive values as CSV file"))
+                        downloadButton("download_table", label = "Download predictive values as CSV file")),
+                      br()
+                      ,
+                      downloadButton("report_pdf", "Generate report PDF")
                )
              )))
              

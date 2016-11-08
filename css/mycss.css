@@ -9,14 +9,14 @@
 .enter_data{
   display: inline-block;
   vertical-align:top;
-  width: 100px;
+  width: 58%;
 }
 
 
 .enter_time{
   display: inline-block;
   vertical-align:top;
-  width: 90px;
+  width: 40%;
 }
 
 #selected{
@@ -24,18 +24,8 @@
    font-size: 1.2em;
 }
 
-#names_lm{
 
-  width: 194px;
-}
-#login{
 
-  width: 194px;
-}
-#password{
-
-  width: 194px;
-}
 #value{
 
   width: 194px;
