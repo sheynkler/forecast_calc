@@ -1,9 +1,6 @@
 
 
-#forcast{
-  height:420px;
-  overflow: auto;
-}
+
 
 
 .enter_data{
@@ -29,4 +26,9 @@
 #value{
 
   width: 194px;
+}
+
+
+.show_table{
+  padding-left:20px;
 }

@@ -8,10 +8,12 @@ params:
   time1: 1
   time2: 2
   data_show: 3
+  plot_t: 1
+  sd: 0
     
 ---
 
-## Das ist Prognose fuer `r params$group` von `r params$time1` bis `r params$time2`
+## Predicted values for `r params$group` from `r params$time1` to `r params$time2`
 
 
 
@@ -23,7 +25,55 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r echo=F}
 data_show <- params$data_show
+plot_t <- params$plot_t
+sd <- params$sd
+time1 <- params$time1
+time2 <- params$time2
+if (plot_t == 1) {
+  x <- barplot(
+  data_show$Value,
+  col = "cornflowerblue",
+  names.arg = data_show$Time,
+  main = "Average TV viewing time per person (min.)" ,
+  xlab = "Time (day)",
+  ylab = NULL
+  )
+  
+  for (i in 1:length(data_show$Time)) {
+  if (substr(data_show$Time[i], 12, 13) == "00") {
+  #print(data_show$Time[i])
+  abline(v = x[i], col = "gray60")
+  }
+  }
+}
+if (plot_t == 2){
+      t <- seq(time1, time2, by = "hour")
+    t_str <- as.character(t)
+    #sd <- sd()
+    forcast_lwr <- data_show$Value - sd * 2
+    forcast_lwr <- ifelse(forcast_lwr < 0, 0, forcast_lwr)
+    forcast_upr <- data_show$Value + sd * 2
+          x <- plot(
+            t, data_show$Value,  lwd = 2, type = "l", xaxt="n",
+            col = "cornflowerblue",
+            main = "Average TV viewing time per person (min.)" ,
+            xlab = "Time (day)",
+            ylab = ""
+          )
+        axis.POSIXct(1, t, format="%y-%m-%d %H")
+        grid (1,NULL, lty = 6, col = "cornsilk2") 
+        lines(t, forcast_upr, type = "l", lty = 2)
+        lines(t, forcast_lwr, type = "l", lty = 2)
+        
+        for (i in 1:length(t)) {
+          if (substr(t_str[i], 12, 13) == "00") {
+            #print(t_str[i])
+            abline(v = t[i], col = "gray60", lty="dotted")
+          }
+        }
+        legend("topleft", legend=c("Value", "min, max"),
+               col=c("blue", "black"), lty=1:2, cex=0.8)
+}
 
-barplot(data_show$Value, col = "cornflowerblue", names.arg = data_show$Time, main = "Predictive viewing time" )
-knitr::kable(data_show)
+#knitr::kable(data_show)
 ```
